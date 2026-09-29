@@ -1,4 +1,4 @@
-# TracMyHabits reference audit and Daylist scope
+# TracMyHabits reference audit and Grove scope
 
 ## What was supplied
 
@@ -51,3 +51,16 @@ The first implementation borrowed the palette but did not sufficiently follow th
 The selected calendar cell is a centered square with a full-cell indigo fill. Today has a separate lavender outline. Calendar cells use equal columns and aspect-ratio rather than independent width and height constraints, and the calendar no longer shares a squeezed narrow row with categories. A week selector and inline task entry make the main workspace more directly useful.
 
 AGENTS.md now records these design constraints, product boundaries, persistence requirements and validation standards.
+
+## React, priorities and characters — expanded user request
+
+The new request explicitly supersedes the original buildless and no-matrix scope. The app is now React with Vite, and the matrix is an alternate view of the same locally stored tasks. The supplied Eisenhower screenshot and six samples across the 155-second Stitch recording informed the four bordered quadrants, task cards, color hierarchy and mobile stacking. Chrome was unavailable through the browser connection, so the uploaded recording was the visual reference. No claim is made to reproduce an unseen Stitch runtime animation exactly.
+
+The three extra features are deliberately small:
+1. **Task notes**: `pwd.md` Quick Notes section, including notes linked to tasks; `plan.md` section 1.2 description metadata.
+2. **Resource links**: `plan.md` section 1.2 linked resource. Only HTTP(S) links are allowed, opening in a separate tab.
+3. **Daily / weekly repeats**: `plan.md` section 1.2 recurrence and `pwd.md` recurring life tasks. No notification scheduler or background service is implied.
+
+Priorities encode urgency and importance: Do now (P1), Schedule (P2), Delegate (P3), Reconsider (P4). Reconsider adapts the reference's Eliminate label without implying automatic deletion. The list remains chronological, while the matrix groups by priority.
+
+The official Blobatar React package supplies every character. Seeded task IDs keep a task's identity stable across edits and reloads; repeat occurrences retain the series character. Active states use Blobatar's motion stylesheet. Completion adds a short hop followed by the package's sleepy expression, muted color and resting posture. Reopening restores the active character. All characters render locally, with reduced-motion support.

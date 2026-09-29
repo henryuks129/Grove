@@ -1,0 +1,11 @@
+import {useState,useEffect,useRef} from 'react';
+import {STORAGE_KEY,decode,normalizeTask} from './model.js';
+function readStorage(){try{return {...decode(localStorage.getItem(STORAGE_KEY)),error:''};}catch{return {tasks:[],version:2,error:'Saved tasks could not be read. They have not been overwritten. Restore valid data or allow browser storage, then reload.'};}}
+export function useTaskStore(){
+  const [initial]=useState(readStorage),[tasks,setTasks]=useState(initial.tasks),[storageError,setStorageError]=useState(initial.error),[blocked,setBlocked]=useState(Boolean(initial.error));
+  const version=useRef(initial.version),tasksRef=useRef(tasks);tasksRef.current=tasks;
+  useEffect(()=>{const sync=e=>{if(e.key===STORAGE_KEY||e.key===null){const data=readStorage();setTasks(data.tasks);setStorageError(data.error);setBlocked(Boolean(data.error));version.current=data.version;}};window.addEventListener('storage',sync);return()=>window.removeEventListener('storage',sync);},[]);
+  function commit(next){if(blocked)return false;try{next.forEach(normalizeTask);if(version.current===1&&!localStorage.getItem('daylist.tasks.backup.v1'))localStorage.setItem('daylist.tasks.backup.v1',localStorage.getItem(STORAGE_KEY));localStorage.setItem(STORAGE_KEY,JSON.stringify({version:2,tasks:next}));version.current=2;setTasks(next);tasksRef.current=next;setStorageError('');return true;}catch{setStorageError('This change could not be saved. Your saved tasks are unchanged. Check browser storage and try again.');return false;}}
+  useEffect(()=>{if(!document.modelContext?.registerTool)return;const lifecycle=new AbortController();try{Promise.resolve(document.modelContext.registerTool({name:'list_tasks',description:'Read tasks saved in this browser, including priorities and recurrence.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(input){if(!input||typeof input!=='object'||Object.keys(input).length)throw new Error('Expected an empty object');if(blocked)throw new Error('Saved tasks unavailable');return {tasks:tasksRef.current.map(t=>({...t}))};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}return()=>lifecycle.abort();},[blocked]);
+  return {tasks,tasksRef,commit,storageError};
+}
