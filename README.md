@@ -22,6 +22,7 @@ Use a stable hostname and port to retain the same browser-local data. The active
 ## Features
 
 - Task creation, editing, completion, reopening, deletion with undo.
+- Due dates and times, with a preview control that intentionally makes a task overdue so its moss growth can be tested.
 - Plan view, date/category/status/priority filters, calendar and completion summary.
 - Eisenhower matrix: P1 Do now, P2 Schedule, P3 Delegate, P4 Reconsider. Move cards by drag/drop on desktop or the priority selector on any device. Labels describe decisions; they do not delegate or delete tasks.
 - A stable, locally rendered Blobatar on every task. Active characters breathe/blink; completed characters hop and settle into a sleepy state. Reopening wakes them. Reduced motion is respected.

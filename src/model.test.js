@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {decode,completeTask,nextDate,normalizeTask,validLink} from './model.js';
+import {decode,completeTask,nextDate,normalizeTask,validLink,validTime,isPastDue} from './model.js';
 const legacy={id:'old',title:'Existing task',date:'2026-09-29',category:'work',status:'todo',created:1};
 test('migrates legacy tasks without changing their identity or existing fields',()=>{const t=decode(JSON.stringify({version:1,tasks:[legacy]})).tasks[0];for(const key of Object.keys(legacy))assert.equal(t[key],legacy[key]);assert.equal(t.priority,'schedule');assert.equal(t.avatarSeed,'old');assert.equal(t.repeat,'none');});
 test('rejects malformed saved data and unsafe resource links',()=>{assert.throws(()=>decode('{'));assert.throws(()=>decode(JSON.stringify({version:2,tasks:[legacy,legacy]})));assert.equal(validLink('javascript:alert(1)'),false);assert.equal(validLink('https://example.com/lesson'),true);assert.throws(()=>normalizeTask({...legacy,url:'data:text/html,test'}));});
 test('a recurring completion schedules one future occurrence; reopening does not duplicate it',()=>{const tasks=[normalizeTask({...legacy,repeat:'daily'})];const done=completeTask(tasks,'old','2026-09-29',()=> 'next');assert.equal(done.length,2);assert.equal(done[1].date,'2026-09-30');assert.equal(done[0].status,'done');const reopened=completeTask(done,'old');const again=completeTask(reopened,'old','2026-09-29',()=> 'duplicate');assert.equal(again.length,2);assert.equal(again[0].nextId,'next');});
 test('weekly repeats preserve cadence across months and skip missed dates',()=>{assert.equal(nextDate('2026-09-29','weekly','2026-10-07'),'2026-10-13');assert.equal(nextDate('2026-12-31','daily','2026-12-31'),'2027-01-01');});
 test('priority, notes and resource link survive serialization',()=>{const t=normalizeTask({...legacy,priority:'do',notes:'A detail',url:'https://example.com',repeat:'weekly'});assert.deepEqual(decode(JSON.stringify({version:2,tasks:[t]})).tasks,[t]);});
+test('due times validate and drive overdue moss state',()=>{assert.equal(validTime('09:30'),true);assert.equal(validTime('25:00'),false);const t=normalizeTask({...legacy,date:'2026-09-29',dueTime:'09:00'});assert.equal(isPastDue(t,new Date('2026-09-29T10:00:00')),true);assert.equal(isPastDue(t,new Date('2026-09-29T08:00:00')),false);});

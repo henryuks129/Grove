@@ -9,14 +9,20 @@ export const PRIORITIES = {
 };
 export const dateKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 export const validDate = s => typeof s==='string' && (s==='' || (/^\d{4}-\d{2}-\d{2}$/.test(s) && dateKey(new Date(s+'T12:00:00'))===s));
+export const validTime = s => typeof s==='string' && (s==='' || /^([01]\d|2[0-3]):[0-5]\d$/.test(s));
+export function isPastDue(task, now=new Date()) {
+  if(!task.date || task.status==='done') return false;
+  const due=new Date(`${task.date}T${task.dueTime||'23:59'}:00`);
+  return Number.isFinite(due.getTime()) && due.getTime()<now.getTime();
+}
 export function validLink(url) {
   if(url==='') return true;
   try {const parsed=new URL(url);return ['https:','http:'].includes(parsed.protocol)&&!parsed.username&&!parsed.password;}catch{return false;}
 }
 export function normalizeTask(t) {
   if(!t || typeof t.id!=='string' || !t.id || typeof t.title!=='string' || !t.title.trim() || t.title.length>200 || !Object.hasOwn(CATEGORIES,t.category) || !Object.hasOwn(STATUSES,t.status) || !validDate(t.date) || !Number.isFinite(t.created)) throw new Error('Invalid saved task');
-  const task={...t,priority:t.priority??'schedule',notes:t.notes??'',url:t.url??'',repeat:t.repeat??'none',nextId:t.nextId??null,avatarSeed:t.avatarSeed??t.id};
-  if(!Object.hasOwn(PRIORITIES,task.priority) || typeof task.notes!=='string'||task.notes.length>4000||typeof task.url!=='string'||task.url.length>2048||!validLink(task.url)||!['none','daily','weekly'].includes(task.repeat)||(task.repeat!=='none'&&!task.date)||(task.nextId!==null&&typeof task.nextId!=='string')||typeof task.avatarSeed!=='string')throw new Error('Invalid task details');
+  const task={...t,priority:t.priority??'schedule',notes:t.notes??'',url:t.url??'',repeat:t.repeat??'none',nextId:t.nextId??null,avatarSeed:t.avatarSeed??t.id,dueTime:t.dueTime??''};
+  if(!Object.hasOwn(PRIORITIES,task.priority) || typeof task.notes!=='string'||task.notes.length>4000||typeof task.url!=='string'||task.url.length>2048||!validLink(task.url)||!validTime(task.dueTime)||!['none','daily','weekly'].includes(task.repeat)||(task.repeat!=='none'&&!task.date)||(task.nextId!==null&&typeof task.nextId!=='string')||typeof task.avatarSeed!=='string')throw new Error('Invalid task details');
   return task;
 }
 export function decode(raw) {
