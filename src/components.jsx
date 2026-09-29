@@ -11,8 +11,8 @@ export function dateLabel(date,today){if(!date)return 'No date';if(date===today)
 function Character({task}) {
   const [celebrate,setCelebrate]=useState(false),previous=useRef(task.status);
   useEffect(()=>{const completed=previous.current!=='done'&&task.status==='done';previous.current=task.status;if(completed){setCelebrate(true);const timer=setTimeout(()=>setCelebrate(false),850);return()=>clearTimeout(timer);}setCelebrate(false);},[task.status]);
-  const done=task.status==='done';
-  return <div className={`task-character ${done?'resting':''} ${celebrate?'celebrating':''}`} aria-label={done?'Task companion resting':'Task companion active'} role="img"><Blobatar name={task.avatarSeed} size={64} animate={done?'hover':'always'} expression={celebrate?happy:done?sleepy:task.status==='progress'?thinking:idle} background="none" aria-hidden="true"/>{done&&<span className="sleep-mark" aria-hidden="true">z<span>z</span></span>}</div>;
+  const done=task.status==='done', overdue=task.date&&task.date<dateKey(new Date())&&!done;
+  return <div className={`task-character ${done?'resting':''} ${overdue?'overgrown':''} ${celebrate?'celebrating':''}`} aria-label={done?'Task companion resting':overdue?'Overgrown task companion':'Task companion active'} role="img"><Blobatar name={task.avatarSeed} size={64} animate={done?'hover':'always'} expression={celebrate?happy:done?sleepy:task.status==='progress'?thinking:idle} background="none" aria-hidden="true"/>{overdue&&<span className="vine-sprout" aria-hidden="true">⌁</span>}{done&&<span className="sleep-mark" aria-hidden="true">z<span>z</span></span>}</div>;
 }
 export function TaskCard({task,onEdit,onComplete,onDelete,onPriority,today,compact=false}) {
   const priority=PRIORITIES[task.priority];
