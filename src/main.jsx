@@ -10,6 +10,16 @@ import TaskEditor from './TaskEditor.jsx';
 import Matrix from './Matrix.jsx';
 import {useTaskStore} from './useTaskStore.js';
 
+const AnimatedBackground = React.memo(function AnimatedBackground(){
+  const [count,setCount]=useState(0);
+  useEffect(()=>{
+    const resize=()=>{const cell=window.innerWidth<=660?110:150;setCount(Math.ceil(window.innerWidth/cell)*Math.ceil(window.innerHeight/cell));};
+    resize();window.addEventListener('resize',resize);
+    return()=>window.removeEventListener('resize',resize);
+  },[]);
+  return <div className="blob-background" aria-hidden="true">{Array.from({length:count},(_,i)=><div className="background-companion" key={i}><Blobatar name={`grove-wall-${i%12}`} size={110} animate="always" expression={idle}/></div>)}</div>;
+});
+
 function App(){
   const {tasks,tasksRef,commit,storageError}=useTaskStore();
   const [today,setToday]=useState(dateKey(new Date())),[month,setMonth]=useState(new Date(new Date().getFullYear(),new Date().getMonth(),1));
@@ -38,4 +48,4 @@ function App(){
     {storageError&&<p className="storage-error" role="alert">{storageError}</p>}<footer className="app-footer"><a href="https://blobatar.dev/" target="_blank" rel="noopener noreferrer">Characters by Blobatar</a></footer>
     </main>{editor&&<TaskEditor key={editor.id} task={editor} onClose={()=>setEditor(null)} onSave={saveTask}/>}<div className="toast" role="status" hidden={!toast}><span>{toast?.text}</span>{toast?.undo&&<button onClick={toast.undo}>Undo</button>}</div></div>;
 }
-createRoot(document.getElementById('root')).render(<App/>);
+createRoot(document.getElementById('root')).render(<><AnimatedBackground/><App/></>);

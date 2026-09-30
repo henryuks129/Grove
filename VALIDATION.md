@@ -28,4 +28,6 @@ Scope of evidence: local browser QA, not physical-device testing or cross-browse
 - No runtime errors in the inspected browser log.
 # September 30 background update
 
+Follow-up: replaced the static tile with a fixed grid of animated official Blobatar components, sized to the viewport. Background ignores pointer events and is hidden from accessibility navigation. Reduced-motion CSS disables its animations. Production build and diff checks passed; browser visual verification remains unperformed.
+
 Replaced the background with a locally generated SVG tile of 12 official Blobatars and removed the device-storage footer copy. Production build passed with Node 24.12.0. No task behavior or storage changes. Visual browser verification was not performed for this update.

@@ -7,7 +7,7 @@
 - Do not add accounts, backend task storage, AI, habit tracking, streaks, currencies, focus timers, integrations or collaboration without a new user request.
 
 ## Design direction
-- Use the local repeating Blobatar wallpaper across the viewport, with dark reading surfaces over it. Omit the “Saved on this device” footer text; persistence still uses localStorage.
+- Use animated Blobatar components across the viewport, with dark reading surfaces over them. Keep the background decorative, non-interactive and responsive to reduced-motion preferences. Omit the “Saved on this device” footer text; persistence still uses localStorage.
 - The wordmark is `grove` with the leaf mark defined in `src/main.jsx`; keep it simple and do not add a checkmark or trailing dot.
 - Follow the FlowSpace dashboard sequence: greeting and date, compact horizontal completion summary, chronological task list, lightweight calendar support.
 - Use SF/system/Inter-style typography, a 16px reading size, an 8px spacing rhythm, 12–16px cards and quiet shadows.
