@@ -182,7 +182,11 @@ fieldset {border:0;padding:0;margin:0 0 24px}
 
 /* Grove theme: a deep workspace that lets the companions and priority colors lead. */
 :root { color-scheme: dark; --ink:#f5f1ea; --surface:#20232e; --surface-2:#282b38; --line:#383b49; --muted:#a39fb0; --indigo:#a497ff; --mint:#72d6a5; --coral:#ff9275; --shadow:0 12px 32px #090a1028; }
-body { background:#171923 url('/grove-bg.svg') center top/cover fixed no-repeat; color:var(--ink); }
+body { background:#292c38 url('/blobatar-wallpaper.svg') center top/600px 450px repeat fixed; color:var(--ink); }
+.app { min-height:100dvh; background:rgba(16,19,28,.36); }
+.topbar,main { background:rgba(23,25,35,.82); }
+main { border-radius:0 0 24px 24px; }
+@media(max-width:660px) { body { background-size:400px 300px; } }
 .topbar { border-color:var(--line); }
 .brand { color:#f5f1ea; display:inline-flex; align-items:center; gap:9px; }
 .brand-mark { display:grid; place-items:center; width:35px; height:35px; border-radius:11px; background:var(--indigo); color:#171923; }

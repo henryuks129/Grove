@@ -26,3 +26,6 @@ Scope of evidence: local browser QA, not physical-device testing or cross-browse
 - Visually reviewed the desktop task surface, mobile main layout and mobile selected/today calendar states.
 - Removed only the temporary task named “QA redesign: review the task layout”. Existing storage key and schema remain unchanged.
 - No runtime errors in the inspected browser log.
+# September 30 background update
+
+Replaced the background with a locally generated SVG tile of 12 official Blobatars and removed the device-storage footer copy. Production build passed with Node 24.12.0. No task behavior or storage changes. Visual browser verification was not performed for this update.
